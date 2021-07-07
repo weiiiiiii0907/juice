@@ -1,38 +1,30 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 int main(int argc, char **argv){
-    char buf[1024];
-    int read_size = 0;
-
-    int fd_in, fd_out;
-    fd_in = open(argv[1], O_RDONLY);
-    fd_out = open(argv[2], O_WRONLY | O_CREAT, 00600);
-
-    if(fd_in == -1){
+    char word[4096];
+    int size=0,input,output;
+    input=open(argv[1],O_RDONLY);
+    output=open(argv[2],O_WRONLY|O_CREAT,00600);
+    if(input==-1){
         printf("Open file failed.");
         return 0;
     }
-    if(fd_out == -1){
+    if(output==-1){
         printf("Open file failed.");
         return 0;
     }
-
     while(1){
-        read_size = read(fd_in, buf, 1024);
-
-        if(read_size <= 0) break;
-
-        write(fd_out, buf, read_size);
+        size=read(input,word,4096);
+        if(size<=0) break;
+        write(output,word,size);
     }
-    close(fd_in);
-    close(fd_out);
-
+    close(input);
+    close(output);
     return 0;
-
 }
